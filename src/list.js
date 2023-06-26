@@ -17,16 +17,21 @@ export const list = (path) => {
           return [item, type];
         });
 
-        Promise.all(arrayForTable).then((res) =>
-          console.table(
-            res.sort((a, b) => {
-              if (a[1].toLowerCase() === b[1].toLowerCase()) {
-                return a[0].toLowerCase() - b[0].toLowerCase();
-              }
-              return b[1].toLowerCase() - a[1].toLowerCase();
-            })
-          )
-        );
+        Promise.all(arrayForTable).then((res) => {
+          const filterDirectory = [];
+          var filterFile = [];
+          res.forEach(function (value) {
+            if (value[1] === 'directory') {
+              filterDirectory.push(value);
+            } else {
+              filterFile.push(value);
+            }
+          });
+          console.table([
+            ...filterDirectory.sort((a, b) => a[0].localeCompare(b[0])),
+            ...filterFile.sort((a, b) => a[0].localeCompare(b[0])),
+          ]);
+        });
       }
     })
     .catch(() => {
